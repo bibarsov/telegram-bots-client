@@ -3,6 +3,7 @@ package bibarsov.telegram.bots.client.service;
 import bibarsov.telegram.bots.client.dto.GetUpdateResponse;
 import bibarsov.telegram.bots.client.dto.Update;
 import bibarsov.telegram.bots.client.serialization.JsonHelper;
+import bibarsov.telegram.bots.client.service.handler.Handler;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -28,10 +29,17 @@ public class UpdatePollerService {
 
 
     public UpdatePollerService(
-            JsonHelper jsonHelper,
-            Dispatcher dispatcher,
-            String botApiKey
+            String botApiKey,
+            int workersThreadCount,
+            Class<? extends Enum> enumClass,
+            Handler... handlers
     ) {
+        this.botApiKey = botApiKey;
+        this.dispatcher = new Dispatcher(workersThreadCount, handlers, enumClass);
+        this.jsonHelper = new JsonHelper();
+    }
+
+    public UpdatePollerService(JsonHelper jsonHelper, Dispatcher dispatcher, String botApiKey) {
         this.jsonHelper = jsonHelper;
         this.dispatcher = dispatcher;
         this.botApiKey = botApiKey;

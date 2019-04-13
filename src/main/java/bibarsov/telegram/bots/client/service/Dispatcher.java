@@ -5,20 +5,25 @@ import bibarsov.telegram.bots.client.service.handler.Handler;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
 
 @ParametersAreNonnullByDefault
-public abstract class Dispatcher<T extends Enum<T>> {
+public class Dispatcher<T extends Enum<T>> {
 
     private final ExecutorServiceRouter router;
     private final Handler[] handlers;
+    private final EnumSet<T> enumSet;
 
     public Dispatcher(
             int workersThreadCount,
-            Handler[] handlers
+            Handler[] handlers,
+            Class<T> enumClass
     ) {
         this.handlers = handlers;
         this.router = new ExecutorServiceRouter(workersThreadCount);
+        this.enumSet = EnumSet.allOf(enumClass);
     }
+
 
     /**
      * Update dispatcher
@@ -33,20 +38,38 @@ public abstract class Dispatcher<T extends Enum<T>> {
 
         for (Handler handler : handlers) {
             if (handler.getCommand() == context) {
-                router.route(hashFromUpdate(update), () -> handler.handleUpdate(update));
+                router.route(getQualifier(update), () -> handler.handleUpdate(update));
             }
         }
     }
 
+    /**
+     * Logic of extracting context / command. Override to change
+     */
     @Nullable
-    protected abstract T extractContext(Update update);
+    protected T extractContext(Update update) {
+        //extracting by message containing command if found by default
+        if (update.message != null) {
+            for (T t : enumSet) {
+                if (String.format("/%s", t.name()).equalsIgnoreCase(update.message.text)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
 
-    protected abstract void processContext(@Nullable T context);
+    protected void processContext(@Nullable T context) {
+        //do nothing by default
+    }
 
     /**
-     * Split up the tasks by multiple threads based on arbitrary hash
-     *
-     * @return hashcode
+     * Split up the tasks by multiple threads based on arbitrary qualifier
+     * Override to change logic given by default (updateId),
+     * maybe it would be more convenient to use UserId as qualifier,
+     * so only one message is processed at once by a particular user
      */
-    protected abstract int hashFromUpdate(Update update);
+    protected long getQualifier(Update update) {
+        return update.updateId;
+    }
 }

@@ -36,6 +36,11 @@ public class MessageService {
         this.apiKey = apiKey;
     }
 
+    public MessageService(String apiKey) {
+        this.jsonHelper = new JsonHelper();
+        this.apiKey = apiKey;
+    }
+
     public void scheduleMessage(long id, String text) {
         scheduleMessage(new SendMessageRequest(id, text, null, null, null));
     }
