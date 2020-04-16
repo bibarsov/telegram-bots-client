@@ -23,6 +23,10 @@ public class Update {
     @Nullable
     public final Message message;
 
+    @JsonProperty(value = "new_chat_members")
+    @Nullable
+    public final List<User> newChatMembers;
+
     @JsonProperty(value = "callback_query")
     @Nullable
     public final CallbackQuery callbackQuery;
@@ -35,11 +39,13 @@ public class Update {
     public Update(
             @JsonProperty("update_id") Long updateId,
             @JsonProperty("message") @Nullable Message message,
+            @JsonProperty("new_chat_members") @Nullable List<User> newChatMembers,
             @JsonProperty("callback_query") @Nullable CallbackQuery callbackQuery,
-            @JsonProperty(value = "photo") @Nullable List<PhotoSize> photo
+            @JsonProperty("photo") @Nullable List<PhotoSize> photo
     ) {
         this.updateId = updateId;
         this.message = message;
+        this.newChatMembers = newChatMembers;
         this.callbackQuery = callbackQuery;
         this.photo = photo;
     }

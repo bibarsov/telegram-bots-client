@@ -20,4 +20,5 @@ dependencies {
     compileOnly 'com.squareup.okhttp3:okhttp:3.13.1'
     compileOnly 'org.slf4j:slf4j-api:1.7.5'
     compileOnly 'com.google.code.gson:gson:2.8.2'
+    compileOnly 'com.google.guava:guava:27.0.1-jre'
 }

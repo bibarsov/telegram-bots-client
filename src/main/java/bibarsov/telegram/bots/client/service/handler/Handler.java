@@ -4,6 +4,7 @@ import bibarsov.telegram.bots.client.dto.CallbackQuery;
 import bibarsov.telegram.bots.client.dto.Message;
 import bibarsov.telegram.bots.client.dto.PhotoSize;
 import bibarsov.telegram.bots.client.dto.Update;
+import bibarsov.telegram.bots.client.dto.User;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Handler<T extends Enum<T>> {
         if (update.message != null) handle(update.message);
         if (update.callbackQuery != null) handle(update.callbackQuery);
         if (update.photo != null) handle(update.photo);
+        if (update.newChatMembers != null) handleNewChatMembers(update.newChatMembers);
     }
 
     public void handle(Update update) {
@@ -30,6 +32,10 @@ public class Handler<T extends Enum<T>> {
     }
 
     public void handle(CallbackQuery callbackQuery) {
+        //ignore by default
+    }
+
+    public void handleNewChatMembers(List<User> newChatMembers) {
         //ignore by default
     }
 
