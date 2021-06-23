@@ -1,17 +1,18 @@
 package ru.bibarsov.telegram.bots.client.service;
 
-import ru.bibarsov.telegram.bots.client.dto.GetUpdateResponse;
-import ru.bibarsov.telegram.bots.client.dto.Update;
-import ru.bibarsov.telegram.bots.client.serialization.JsonHelper;
-import ru.bibarsov.telegram.bots.client.service.handler.Handler;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.bibarsov.telegram.bots.client.dto.GetUpdateResponse;
+import ru.bibarsov.telegram.bots.client.dto.Update;
+import ru.bibarsov.telegram.bots.client.serialization.JsonHelper;
+import ru.bibarsov.telegram.bots.client.service.handler.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,8 +33,8 @@ public class UpdatePollerService {
     public <T extends Enum<T>> UpdatePollerService(
         String botApiKey,
         int workersThreadCount,
-        Class<T> enumClass,
-        Handler<T>... handlers
+        List<Handler<T>> handlers,
+        Class<T> enumClass
     ) {
         this.botApiKey = botApiKey;
         this.dispatcher = new BasicDispatcher<T>(

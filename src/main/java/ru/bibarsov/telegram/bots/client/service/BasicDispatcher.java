@@ -6,17 +6,18 @@ import ru.bibarsov.telegram.bots.client.service.handler.Handler;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
 
     protected final Router router;
-    protected final Handler<T>[] handlers;
+    protected final List<Handler<T>> handlers;
     protected final EnumSet<T> enumSet;
 
     public BasicDispatcher(
         int workersThreadCount,
-        Handler<T>[] handlers,
+        List<Handler<T>> handlers,
         Class<T> enumClass
     ) {
         this.handlers = handlers;
