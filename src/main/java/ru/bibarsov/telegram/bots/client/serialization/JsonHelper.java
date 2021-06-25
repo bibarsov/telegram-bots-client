@@ -1,5 +1,6 @@
 package ru.bibarsov.telegram.bots.client.serialization;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,14 @@ public class JsonHelper {
     public <T> T deserialize(String json, Class<T> valueType) {
         try {
             return this.deserializerOM.readValue(json, valueType);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public <T> T deserialize(String json, TypeReference<T> typeReference) {
+        try {
+            return this.deserializerOM.readValue(json, typeReference);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
