@@ -1,31 +1,34 @@
 package ru.bibarsov.telegram.bots.client.service;
 
 import ru.bibarsov.telegram.bots.client.dto.Update;
-import ru.bibarsov.telegram.bots.client.service.handler.Handler;
+import ru.bibarsov.telegram.bots.client.service.handler.CommandHandler;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 @ParametersAreNonnullByDefault
 public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
 
     protected final Router router;
-    protected final List<Handler<T>> handlers;
-    protected final Handler<T> defaultHandler;
+    protected final List<CommandHandler<T>> handlers;
+    protected final CommandHandler<T> defaultHandler;
     protected final EnumSet<T> enumSet;
 
     public BasicDispatcher(
         int workersThreadCount,
-        List<Handler<T>> handlers,
-        Handler<T> defaultHandler,
+        List<CommandHandler<T>> handlers,
+        CommandHandler<T> defaultHandler,
         Class<T> enumClass
     ) {
+        checkArgument(!handlers.isEmpty());
         this.handlers = handlers;
         this.router = new Router(workersThreadCount);
         this.defaultHandler = defaultHandler;
-        this.enumSet = EnumSet.allOf(enumClass);
+        this.enumSet = EnumSet.allOf(enumClass);//TODO Consider only supported subset (from handlers)
     }
 
     /**
@@ -37,7 +40,7 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
     @Override
     public void dispatch(Update update) {
         T context = extractContext(update);
-        for (Handler<T> handler : handlers) {
+        for (CommandHandler<T> handler : handlers) {
             if (handler.getCommand() == context) {
                 router.route(getQualifier(update), () -> handler.handleUpdate(update));
                 return;

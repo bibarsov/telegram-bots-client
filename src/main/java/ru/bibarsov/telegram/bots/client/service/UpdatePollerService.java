@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import ru.bibarsov.telegram.bots.client.dto.GetUpdateResponse;
 import ru.bibarsov.telegram.bots.client.dto.Update;
 import ru.bibarsov.telegram.bots.client.serialization.JsonHelper;
-import ru.bibarsov.telegram.bots.client.service.handler.Handler;
+import ru.bibarsov.telegram.bots.client.service.handler.CommandHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -33,8 +33,8 @@ public class UpdatePollerService {
     public <T extends Enum<T>> UpdatePollerService(
         String botApiKey,
         int workersThreadCount,
-        List<Handler<T>> handlers,
-        Handler<T> defaultHandler,
+        List<CommandHandler<T>> handlers,
+        CommandHandler<T> defaultHandler,
         Class<T> enumClass
     ) {
         this.botApiKey = botApiKey;

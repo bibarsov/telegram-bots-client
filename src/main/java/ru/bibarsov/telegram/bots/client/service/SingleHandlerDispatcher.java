@@ -9,11 +9,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SingleHandlerDispatcher implements Dispatcher {
 
     protected final Router router;
-    protected final Handler<?> globalHandler;
+    protected final Handler globalHandler;
 
     public SingleHandlerDispatcher(
         int workersThreadCount,
-        Handler<?> globalHandler
+        Handler globalHandler
     ) {
         this.globalHandler = globalHandler;
         this.router = new Router(workersThreadCount);

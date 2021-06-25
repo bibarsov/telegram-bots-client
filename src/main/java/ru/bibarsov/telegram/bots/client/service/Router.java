@@ -20,7 +20,7 @@ public class Router {
         }
     }
 
-    public void route(long id, Runnable runnable) {
-        services.get((int) (id % size)).execute(runnable);
+    public void route(long qualifier, Runnable runnable) {
+        services.get((int) (qualifier % size)).execute(runnable);
     }
 }

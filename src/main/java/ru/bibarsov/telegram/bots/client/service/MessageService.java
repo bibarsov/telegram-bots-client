@@ -25,6 +25,14 @@ public class MessageService {
         scheduleMessage(new SendMessageRequest(id, text, null, null, null));
     }
 
+    public void scheduleMessage(long id, String text, boolean markdown) {
+        scheduleMessage(new SendMessageRequest(id, text, markdown ? "markdown" : null, null, null));
+    }
+
+    public void scheduleMessage(long id, String text, boolean markdown, boolean disableWebPagePreview) {
+        scheduleMessage(new SendMessageRequest(id, text, markdown ? "markdown" : null, disableWebPagePreview, null));
+    }
+
     public void scheduleMessage(SendMessageRequest request) {
         scheduleMessage(request, (ignored) -> {
         });

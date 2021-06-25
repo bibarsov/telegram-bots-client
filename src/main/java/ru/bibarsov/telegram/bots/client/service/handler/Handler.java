@@ -2,10 +2,9 @@ package ru.bibarsov.telegram.bots.client.service.handler;
 
 import ru.bibarsov.telegram.bots.client.dto.*;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-public class Handler<T extends Enum<T>> {
+public class Handler {
 
     public final void handleUpdate(Update update) {
         handle(update);
@@ -71,15 +70,5 @@ public class Handler<T extends Enum<T>> {
 
     public void handleNewChatMembers(List<User> newChatMembers, Message message) {
         //ignore by default
-    }
-
-    /**
-     * Supposed to be enum instance on which the context is fixed.
-     * If not overriden - works by default when dispatcher can't find
-     * the current context.
-     */
-    @Nullable
-    public T getCommand() {
-        return null;
     }
 }
