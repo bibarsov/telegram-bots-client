@@ -64,13 +64,10 @@ public class TelegramBotApi {
             baseUri + "/getChatMembersCount?chat_id=" + username
         ).build();
 
-        try (
-            Response response = httpClient.newCall(request).execute();
-            ResponseBody body = response.body()
-        ) {
-            if (response.isSuccessful() && body != null) {
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
                 JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(body.string()).getAsJsonObject();
+                JsonObject o = parser.parse(response.body().string()).getAsJsonObject();
                 if (o.get("ok").getAsBoolean()) {
                     return o.get("result").getAsLong();
                 }
@@ -90,8 +87,7 @@ public class TelegramBotApi {
                     .addParam("until_date", untilDate.getEpochSecond())
                     .build()
         ).build();
-        try {
-            Response response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody body = response.body();
             if (response.isSuccessful() && body != null) {
                 JsonParser parser = new JsonParser();
@@ -124,64 +120,45 @@ public class TelegramBotApi {
 
     //TODO consider response
     public void answerInlineQuery(InlineQueryAnswer queryAnswer) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(queryAnswer);
+        Request request = new Request.Builder()
+            .url(baseUri + "/answerInlineQuery")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(queryAnswer)))
+            .build();
 
-            Request request = new Request.Builder()
-                .url(baseUri + "/answerInlineQuery")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-
-            response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new RuntimeException("response is not successful");
             }
         } catch (Throwable e) {
             LOGGER.error("inlineQueryAnswer sending failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
     }
 
     @Nullable
     public SendMessageResponse sendMessage(SendMessageRequest requestBody) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(requestBody);
+        Request request = new Request.Builder()
+            .url(baseUri + "/sendMessage")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .build();
 
-            Request request = new Request.Builder()
-                .url(baseUri + "/sendMessage")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-
-            response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
                 return jsonHelper.deserialize(response.body().string(), SendMessageResponse.class);
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
         return null;
     }
 
     @Nullable
     public Boolean edit(EditMessageTextRequest editMessageTextRequest) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(editMessageTextRequest);
-
-            Request request = new Request.Builder()
-                .url(baseUri + "/editMessageText")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-            response = httpClient.newCall(request).execute();
+        //TODO Refactor
+        Request request = new Request.Builder()
+            .url(baseUri + "/editMessageText")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(editMessageTextRequest)))
+            .build();
+        try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody body = response.body();
             if (response.isSuccessful() && body != null) {
                 JsonParser parser = new JsonParser();
@@ -191,10 +168,6 @@ public class TelegramBotApi {
             return false;
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
         return null;
     }
@@ -212,73 +185,47 @@ public class TelegramBotApi {
 //    }
 
     public void editMessageReplyMarkup(EditMessageReplyMarkup requestBody) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(requestBody);
-
-            Request request = new Request.Builder()
-                .url(baseUri + "/editMessageReplyMarkup")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-
-            response = httpClient.newCall(request).execute();
+        Request request = new Request.Builder()
+            .url(baseUri + "/editMessageReplyMarkup")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .build();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 throw new RuntimeException("response is not successful or body is empty");
             }
         } catch (Throwable e) {
             LOGGER.error("editMessageReplyMarkup failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
-//        return;
     }
 
     //TODO consider response
     public void sendPhoto(SendPhotoRequest requestBody) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(requestBody);
+        Request request = new Request.Builder()
+            .url(baseUri + "/sendPhoto")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .build();
 
-            Request request = new Request.Builder()
-                .url(baseUri+"/sendPhoto")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-
-            response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 throw new RuntimeException("response is not successful or body is empty");
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
     }
 
     public void answerCallbackQuery(CallbackQueryAnswer requestBody) {
-        Response response = null;
-        try {
-            String json = jsonHelper.serialize(requestBody);
+        Request request = new Request.Builder()
+            .url(baseUri + "/answerCallbackQuery")
+            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .build();
 
-            Request request = new Request.Builder()
-                .url(baseUri + "/answerCallbackQuery")
-                .post(RequestBody.create(JSON_MEDIA_TYPE, json))
-                .build();
-
-            response = httpClient.newCall(request).execute();
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 throw new RuntimeException("response is not successful or body is empty");
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
-        } finally {
-            if (response != null && response.body() != null) {
-                response.close();
-            }
         }
     }
 }

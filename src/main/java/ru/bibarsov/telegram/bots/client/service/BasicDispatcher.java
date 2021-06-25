@@ -13,15 +13,18 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
 
     protected final Router router;
     protected final List<Handler<T>> handlers;
+    protected final Handler<T> defaultHandler;
     protected final EnumSet<T> enumSet;
 
     public BasicDispatcher(
         int workersThreadCount,
         List<Handler<T>> handlers,
+        Handler<T> defaultHandler,
         Class<T> enumClass
     ) {
         this.handlers = handlers;
         this.router = new Router(workersThreadCount);
+        this.defaultHandler = defaultHandler;
         this.enumSet = EnumSet.allOf(enumClass);
     }
 
@@ -37,8 +40,11 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
         for (Handler<T> handler : handlers) {
             if (handler.getCommand() == context) {
                 router.route(getQualifier(update), () -> handler.handleUpdate(update));
+                return;
             }
         }
+        //if no context at all
+        router.route(getQualifier(update), () -> defaultHandler.handleUpdate(update));
     }
 
     /**

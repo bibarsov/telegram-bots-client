@@ -34,12 +34,14 @@ public class UpdatePollerService {
         String botApiKey,
         int workersThreadCount,
         List<Handler<T>> handlers,
+        Handler<T> defaultHandler,
         Class<T> enumClass
     ) {
         this.botApiKey = botApiKey;
         this.dispatcher = new BasicDispatcher<T>(
             workersThreadCount,
             handlers,
+            defaultHandler,
             enumClass
         );
         this.jsonHelper = new JsonHelper();
@@ -76,7 +78,7 @@ public class UpdatePollerService {
             ) {
                 if (response.isSuccessful() && body != null) {
                     String string = body.string();
-                    LOGGER.debug("Got update: {}",string);
+                    LOGGER.debug("Got update: {}", string);
                     GetUpdateResponse apiResponse = jsonHelper.deserialize(string, GetUpdateResponse.class);
                     if (apiResponse.ok && checkNotNull(apiResponse.result).size() > 0) {
                         for (Update update : apiResponse.result) {
