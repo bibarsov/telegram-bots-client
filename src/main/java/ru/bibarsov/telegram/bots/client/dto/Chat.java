@@ -8,7 +8,6 @@ import ru.bibarsov.telegram.bots.client.value.ChatType;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
-import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Immutable
@@ -16,7 +15,6 @@ import javax.validation.constraints.NotNull;
 public class Chat {
 
     @JsonProperty("id")
-    @NotNull
     public final long id;
 
     @JsonProperty("title")
@@ -31,7 +29,6 @@ public class Chat {
     @Nullable
     public final String description;
 
-    @NotNull
     @JsonProperty("type")
     public final ChatType type;
 
