@@ -2,8 +2,7 @@ package ru.bibarsov.telegram.bots.client.service;
 
 import ru.bibarsov.telegram.bots.client.dto.*;
 import ru.bibarsov.telegram.bots.client.repository.client.TelegramBotApi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ru.bibarsov.telegram.bots.client.value.ParseMode;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +11,6 @@ import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class MessageService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
     private final ExecutorService executors = Executors.newCachedThreadPool();
     private final TelegramBotApi telegramBotApi;
@@ -25,12 +23,16 @@ public class MessageService {
         scheduleMessage(new SendMessageRequest(id, text, null, null, null));
     }
 
-    public void scheduleMessage(long id, String text, boolean markdown) {
-        scheduleMessage(new SendMessageRequest(id, text, markdown ? "markdown" : null, null, null));
+    public void scheduleMessage(long id, String text, ParseMode parseMode) {
+        scheduleMessage(new SendMessageRequest(id, text, parseMode.value, null, null));
     }
 
-    public void scheduleMessage(long id, String text, boolean markdown, boolean disableWebPagePreview) {
-        scheduleMessage(new SendMessageRequest(id, text, markdown ? "markdown" : null, disableWebPagePreview, null));
+    public void scheduleMessage(long id, String text, ParseMode parseMode, boolean disableWebPagePreview) {
+        scheduleMessage(new SendMessageRequest(id, text, parseMode.value, disableWebPagePreview, null));
+    }
+
+    public void scheduleMessage(long id, String text, boolean disableWebPagePreview) {
+        scheduleMessage(new SendMessageRequest(id, text, null, disableWebPagePreview, null));
     }
 
     public void scheduleMessage(SendMessageRequest request) {

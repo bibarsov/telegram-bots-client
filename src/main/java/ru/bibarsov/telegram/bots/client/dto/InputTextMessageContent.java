@@ -6,30 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Immutable
 @ParametersAreNonnullByDefault
-public class EditMessageReplyMarkup {
+public class InputTextMessageContent implements InputMessageContent {
 
-    @JsonProperty("inline_message_id")
-    @Nullable
-    public final String inlineMessageId;
-
-    @JsonProperty("reply_markup")
-    @Nullable
-    public final InlineKeyboardMarkup replyMarkup;
+    @JsonProperty("message_text")
+    public final String messageText;
 
     @JsonCreator
-    public EditMessageReplyMarkup(
-        @JsonProperty("inline_message_id") @Nullable String inlineMessageId,
-        @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
-    ) {
-        this.inlineMessageId = inlineMessageId;
-        this.replyMarkup = replyMarkup;
+    public InputTextMessageContent(@JsonProperty("message_text") String messageText) {
+        this.messageText = messageText;
     }
 
     @Override

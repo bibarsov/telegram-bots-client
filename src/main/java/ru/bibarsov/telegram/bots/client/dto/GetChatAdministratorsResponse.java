@@ -3,6 +3,8 @@ package ru.bibarsov.telegram.bots.client.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,10 +25,15 @@ public class GetChatAdministratorsResponse {
 
     @JsonCreator
     public GetChatAdministratorsResponse(
-            @JsonProperty("ok") boolean ok,
-            @JsonProperty("result") @Nullable List<ChatMember> result
+        @JsonProperty("ok") boolean ok,
+        @JsonProperty("result") @Nullable List<ChatMember> result
     ) {
         this.ok = ok;
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

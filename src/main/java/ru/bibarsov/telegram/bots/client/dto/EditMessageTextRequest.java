@@ -3,6 +3,8 @@ package ru.bibarsov.telegram.bots.client.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,13 +46,13 @@ public class EditMessageTextRequest {
 
     @JsonCreator
     public EditMessageTextRequest(
-            @JsonProperty("chat_id") @Nullable String chatId,
-            @JsonProperty("message_id") @Nullable Long messageId,
-            @JsonProperty("inline_message_id") @Nullable Long inlineMessageId,
-            @JsonProperty("text") String text,
-            @JsonProperty("parse_mode") @Nullable String parseMode,
-            @JsonProperty("disable_web_page_preview") @Nullable Boolean disableWebPagePreview,
-            @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
+        @JsonProperty("chat_id") @Nullable String chatId,
+        @JsonProperty("message_id") @Nullable Long messageId,
+        @JsonProperty("inline_message_id") @Nullable Long inlineMessageId,
+        @JsonProperty("text") String text,
+        @JsonProperty("parse_mode") @Nullable String parseMode,
+        @JsonProperty("disable_web_page_preview") @Nullable Boolean disableWebPagePreview,
+        @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
     ) {
         this.chatId = chatId;
         this.messageId = messageId;
@@ -59,5 +61,10 @@ public class EditMessageTextRequest {
         this.parseMode = parseMode;
         this.disableWebPagePreview = disableWebPagePreview;
         this.replyMarkup = replyMarkup;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

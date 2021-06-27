@@ -3,6 +3,8 @@ package ru.bibarsov.telegram.bots.client.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -78,22 +80,22 @@ public class ChatMember {
 
     @JsonCreator
     public ChatMember(
-            @JsonProperty("user") User user,
-            @JsonProperty("status") String status,
-            @JsonProperty("until_date") @Nullable Date untilDate,
-            @JsonProperty("can_be_edited") @Nullable Boolean canBeEdited,
-            @JsonProperty("can_change_info") @Nullable Boolean canChangeInfo,
-            @JsonProperty("can_post_messages") @Nullable Boolean canPostMessages,
-            @JsonProperty("can_edit_messages") @Nullable Boolean canEditMessages,
-            @JsonProperty("can_delete_messages") @Nullable Boolean canDeleteMessages,
-            @JsonProperty("can_invite_users") @Nullable Boolean canInviteUsers,
-            @JsonProperty("can_restrict_members") @Nullable Boolean canRestrictMembers,
-            @JsonProperty("can_pin_messages") @Nullable Boolean canPinMessages,
-            @JsonProperty("can_promote_members") @Nullable Boolean canPromoteMembers,
-            @JsonProperty("can_send_messages") @Nullable Boolean canSendMessages,
-            @JsonProperty("can_send_media_messages") @Nullable Boolean canSendMediaMessages,
-            @JsonProperty("can_send_other_messages") @Nullable Boolean canSendOtherMessages,
-            @JsonProperty("can_add_web_page_previews") @Nullable Boolean canAddWebPagePreviews
+        @JsonProperty("user") User user,
+        @JsonProperty("status") String status,
+        @JsonProperty("until_date") @Nullable Date untilDate,
+        @JsonProperty("can_be_edited") @Nullable Boolean canBeEdited,
+        @JsonProperty("can_change_info") @Nullable Boolean canChangeInfo,
+        @JsonProperty("can_post_messages") @Nullable Boolean canPostMessages,
+        @JsonProperty("can_edit_messages") @Nullable Boolean canEditMessages,
+        @JsonProperty("can_delete_messages") @Nullable Boolean canDeleteMessages,
+        @JsonProperty("can_invite_users") @Nullable Boolean canInviteUsers,
+        @JsonProperty("can_restrict_members") @Nullable Boolean canRestrictMembers,
+        @JsonProperty("can_pin_messages") @Nullable Boolean canPinMessages,
+        @JsonProperty("can_promote_members") @Nullable Boolean canPromoteMembers,
+        @JsonProperty("can_send_messages") @Nullable Boolean canSendMessages,
+        @JsonProperty("can_send_media_messages") @Nullable Boolean canSendMediaMessages,
+        @JsonProperty("can_send_other_messages") @Nullable Boolean canSendOtherMessages,
+        @JsonProperty("can_add_web_page_previews") @Nullable Boolean canAddWebPagePreviews
     ) {
         this.user = user;
         this.status = status;
@@ -111,5 +113,10 @@ public class ChatMember {
         this.canSendMediaMessages = canSendMediaMessages;
         this.canSendOtherMessages = canSendOtherMessages;
         this.canAddWebPagePreviews = canAddWebPagePreviews;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @ParametersAreNonnullByDefault
 public class TelegramBotApi {
     private static final Logger LOGGER = LoggerFactory.getLogger(TelegramBotApi.class);
@@ -67,7 +69,7 @@ public class TelegramBotApi {
         try (Response response = httpClient.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
                 JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(response.body().string()).getAsJsonObject();
+                JsonObject o = parser.parse(checkNotNull(response.body()).string()).getAsJsonObject();
                 if (o.get("ok").getAsBoolean()) {
                     return o.get("result").getAsLong();
                 }
@@ -122,7 +124,7 @@ public class TelegramBotApi {
     public void answerInlineQuery(InlineQueryAnswer queryAnswer) {
         Request request = new Request.Builder()
             .url(baseUri + "/answerInlineQuery")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(queryAnswer)))
+            .post(RequestBody.create(jsonHelper.serialize(queryAnswer), JSON_MEDIA_TYPE))
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
@@ -138,12 +140,18 @@ public class TelegramBotApi {
     public SendMessageResponse sendMessage(SendMessageRequest requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/sendMessage")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
-                return jsonHelper.deserialize(response.body().string(), SendMessageResponse.class);
+                SendMessageResponse messageResponse = jsonHelper.deserialize(
+                    checkNotNull(response.body()).string(),
+                    SendMessageResponse.class
+                );
+                if (messageResponse.ok) {
+                    return messageResponse;
+                }
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
@@ -156,7 +164,7 @@ public class TelegramBotApi {
         //TODO Refactor
         Request request = new Request.Builder()
             .url(baseUri + "/editMessageText")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(editMessageTextRequest)))
+            .post(RequestBody.create(jsonHelper.serialize(editMessageTextRequest), JSON_MEDIA_TYPE))
             .build();
         try (Response response = httpClient.newCall(request).execute()) {
             ResponseBody body = response.body();
@@ -187,7 +195,7 @@ public class TelegramBotApi {
     public void editMessageReplyMarkup(EditMessageReplyMarkup requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/editMessageReplyMarkup")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
         try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
@@ -202,7 +210,7 @@ public class TelegramBotApi {
     public void sendPhoto(SendPhotoRequest requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/sendPhoto")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
@@ -217,7 +225,7 @@ public class TelegramBotApi {
     public void answerCallbackQuery(CallbackQueryAnswer requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/answerCallbackQuery")
-            .post(RequestBody.create(JSON_MEDIA_TYPE, jsonHelper.serialize(requestBody)))
+            .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {

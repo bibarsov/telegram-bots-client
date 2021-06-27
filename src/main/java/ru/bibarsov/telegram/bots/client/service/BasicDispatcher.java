@@ -2,6 +2,7 @@ package ru.bibarsov.telegram.bots.client.service;
 
 import ru.bibarsov.telegram.bots.client.dto.Update;
 import ru.bibarsov.telegram.bots.client.service.handler.CommandHandler;
+import ru.bibarsov.telegram.bots.client.service.handler.Handler;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -15,13 +16,13 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
 
     protected final Router router;
     protected final List<CommandHandler<T>> handlers;
-    protected final CommandHandler<T> defaultHandler;
+    protected final Handler defaultHandler;
     protected final EnumSet<T> enumSet;
 
     public BasicDispatcher(
         int workersThreadCount,
         List<CommandHandler<T>> handlers,
-        CommandHandler<T> defaultHandler,
+        Handler defaultHandler,
         Class<T> enumClass
     ) {
         checkArgument(!handlers.isEmpty());

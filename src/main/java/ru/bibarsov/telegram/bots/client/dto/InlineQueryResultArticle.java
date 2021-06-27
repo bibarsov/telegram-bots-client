@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import ru.bibarsov.telegram.bots.client.value.ChatType;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -14,39 +13,49 @@ import javax.annotation.concurrent.Immutable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Immutable
 @ParametersAreNonnullByDefault
-public class Chat {
+public class InlineQueryResultArticle {
+
+    @JsonProperty("type")
+    public final String type;
 
     @JsonProperty("id")
-    public final long id;
+    public final String id;
 
     @JsonProperty("title")
-    @Nullable
     public final String title;
-
-    @JsonProperty("username")
-    @Nullable
-    public final String username;
 
     @JsonProperty("description")
     @Nullable
     public final String description;
 
-    @JsonProperty("type")
-    public final ChatType type;
+    @JsonProperty("url")
+    @Nullable
+    public final String url;
+
+    @JsonProperty("input_message_content")
+    public final InputMessageContent content;
+
+    @JsonProperty("reply_markup")
+    @Nullable
+    public final InlineKeyboardMarkup replyMarkup;
 
     @JsonCreator
-    public Chat(
-        @JsonProperty("id") long id,
-        @JsonProperty("title") @Nullable String title,
-        @JsonProperty("username") @Nullable String username,
+    public InlineQueryResultArticle(
+        @JsonProperty("type") String type,
+        @JsonProperty("id") String id,
+        @JsonProperty("title") String title,
         @JsonProperty("description") @Nullable String description,
-        @JsonProperty("type") ChatType type
+        @JsonProperty("url") @Nullable String url,
+        @JsonProperty("input_message_content") InputMessageContent content,
+        @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
     ) {
+        this.type = type;
         this.id = id;
         this.title = title;
-        this.username = username;
         this.description = description;
-        this.type = type;
+        this.url = url;
+        this.content = content;
+        this.replyMarkup = replyMarkup;
     }
 
     @Override
