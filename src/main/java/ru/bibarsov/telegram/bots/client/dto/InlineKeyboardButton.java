@@ -43,6 +43,16 @@ public class InlineKeyboardButton {
         this.url = url;
     }
 
+    public InlineKeyboardButton(
+        String text,
+        String callbackData
+    ) {
+        this.text = text;
+        this.callbackData = callbackData;
+        this.switchInlineQuery = null;
+        this.url = null;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);

@@ -52,7 +52,7 @@ public class MessageService {
         executors.submit(() -> telegramBotApi.answerInlineQuery(answer));
     }
 
-    public void scheduleAnswerCallbackuery(CallbackQueryAnswer answer) {
+    public void scheduleAnswerCallbackQuery(CallbackQueryAnswer answer) {
         executors.submit(() -> telegramBotApi.answerCallbackQuery(answer));
     }
 }

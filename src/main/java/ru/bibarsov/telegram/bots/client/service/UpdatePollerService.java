@@ -30,7 +30,7 @@ public class UpdatePollerService {
     private final Dispatcher dispatcher;
     private final String botApiKey;
 
-    public <T extends Enum<T>> UpdatePollerService(
+    public <T extends Enum<T> & Command<T>> UpdatePollerService(
         String botApiKey,
         int workersThreadCount,
         List<CommandHandler<T>> handlers,

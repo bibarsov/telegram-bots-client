@@ -8,11 +8,15 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @ParametersAreNonnullByDefault
-public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
+public class BasicDispatcher<T extends Enum<T> & Command<T>> implements Dispatcher {
+
+    private static final Pattern COMMAND_PATTERN = Pattern.compile("^/([A-z0-9_]+).*");
 
     protected final Router router;
     protected final List<CommandHandler<T>> handlers;
@@ -40,7 +44,7 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
      */
     @Override
     public void dispatch(Update update) {
-        T context = extractContext(update);
+        T context = findContext(update);
         for (CommandHandler<T> handler : handlers) {
             if (handler.getCommand() == context) {
                 router.route(getQualifier(update), () -> handler.handleUpdate(update));
@@ -52,17 +56,34 @@ public class BasicDispatcher<T extends Enum<T>> implements Dispatcher {
     }
 
     /**
-     * Logic of extracting context / command. Override to change
+     * Helper logic of extracting context from raw text
      */
     @Nullable
-    protected T extractContext(Update update) {
-        //extracting by message containing command if found by default
-        if (update.message != null) {
+    public final T findContextFromText(String text) {
+        Matcher matcher = COMMAND_PATTERN.matcher(text);
+        if (matcher.matches()) {
+            String command = matcher.group(1);
             for (T t : enumSet) {
-                if (String.format("/%s", t.name()).equalsIgnoreCase(update.message.text)) {
+                if ((t.getValue()).equals(command)) {
                     return t;
                 }
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Main logic of extracting context. May be overriden
+     */
+    @Nullable
+    protected T findContext(Update update) {
+        String contextRawValue = null;
+        if (update.message != null && update.message.text != null) {
+            contextRawValue = update.message.text;
+        }
+        if (contextRawValue != null) {
+            return findContextFromText(contextRawValue);
         }
         return null;
     }
