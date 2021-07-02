@@ -32,6 +32,10 @@ public class InlineQueryResultArticle {
     @Nullable
     public final String url;
 
+    @JsonProperty("hide_url")
+    @Nullable
+    private final Boolean hideUrl;
+
     @JsonProperty("input_message_content")
     public final InputMessageContent content;
 
@@ -46,6 +50,7 @@ public class InlineQueryResultArticle {
         @JsonProperty("title") String title,
         @JsonProperty("description") @Nullable String description,
         @JsonProperty("url") @Nullable String url,
+        @JsonProperty("hide_url") @Nullable Boolean hideUrl,
         @JsonProperty("input_message_content") InputMessageContent content,
         @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
     ) {
@@ -54,6 +59,7 @@ public class InlineQueryResultArticle {
         this.title = title;
         this.description = description;
         this.url = url;
+        this.hideUrl = hideUrl;
         this.content = content;
         this.replyMarkup = replyMarkup;
     }

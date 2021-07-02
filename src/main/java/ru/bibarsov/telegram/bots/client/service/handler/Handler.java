@@ -1,15 +1,19 @@
 package ru.bibarsov.telegram.bots.client.service.handler;
 
-import ru.bibarsov.telegram.bots.client.dto.*;
-
-import java.util.List;
+import ru.bibarsov.telegram.bots.client.dto.CallbackQuery;
+import ru.bibarsov.telegram.bots.client.dto.InlineQuery;
+import ru.bibarsov.telegram.bots.client.dto.Message;
+import ru.bibarsov.telegram.bots.client.dto.Update;
 
 public class Handler {
 
+    /*
+        From general to specific
+     */
     public final void handleUpdate(Update update) {
         handle(update);
         if (update.message != null) {
-            handle(update.message);
+            handleMessage(update.message);
             switch (update.message.chat.type) {
                 case PRIVATE:
                     handlePrivateMessage(update.message);
@@ -18,7 +22,6 @@ public class Handler {
                     handleGroupMessage(update.message);
                     break;
                 case SUPERGROUP:
-                    //TODO reorganize logic of passing arguments
                     handleSuperGroupMessage(update.message);
                     break;
                 case CHANNEL:
@@ -28,19 +31,33 @@ public class Handler {
                     throw new IllegalStateException("Unexpected value: " + update.message.chat.type);
             }
             if (update.message.newChatMembers != null) {
-                handleNewChatMembers(update.message.newChatMembers, update.message);
+                handleNewChatMembers(update.message);
             }
         }
         if (update.callbackQuery != null) {
-            handle(update.callbackQuery);
+            handleCallbackQuery(update.callbackQuery);
+            if (update.callbackQuery.data != null) {
+                handleCallbackQueryData(update.callbackQuery);
+            }
         }
+        if (update.inlineQuery != null) {
+            handleInlineQuery(update.inlineQuery);
+        }
+    }
+
+    public void handleInlineQuery(InlineQuery inlineQuery) {
+        //ignore by default
+    }
+
+    public void handleCallbackQueryData(CallbackQuery callbackQuery) {
+        //ignore by default
     }
 
     public void handle(Update update) {
         //ignore by default
     }
 
-    public void handle(Message message) {
+    public void handleMessage(Message message) {
         //ignore by default
     }
 
@@ -60,15 +77,11 @@ public class Handler {
         //ignore by default
     }
 
-    public void handle(List<PhotoSize> photoSizes) {
+    public void handleCallbackQuery(CallbackQuery callbackQuery) {
         //ignore by default
     }
 
-    public void handle(CallbackQuery callbackQuery) {
-        //ignore by default
-    }
-
-    public void handleNewChatMembers(List<User> newChatMembers, Message message) {
+    public void handleNewChatMembers(Message message) {
         //ignore by default
     }
 }
