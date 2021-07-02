@@ -29,6 +29,10 @@ public class SendMessageRequest {
     @Nullable
     public final Boolean disableWebPagePreview;
 
+    @JsonProperty("disable_notification")
+    @Nullable
+    public final Boolean disableNotification;
+
     @JsonProperty("reply_markup")
     @Nullable
     public final Object replyMarkup;
@@ -39,12 +43,14 @@ public class SendMessageRequest {
         @JsonProperty("text") String text,
         @JsonProperty("parse_mode") @Nullable String parseMode,
         @JsonProperty("disable_web_page_preview") @Nullable Boolean disableWebPagePreview,
+        @JsonProperty("disable_notification") @Nullable Boolean disableNotification,
         @JsonProperty("reply_markup") @Nullable Object replyMarkup
     ) {
         this.chatId = chatId;
         this.text = text;
         this.parseMode = parseMode;
         this.disableWebPagePreview = disableWebPagePreview;
+        this.disableNotification = disableNotification;
         this.replyMarkup = replyMarkup;
     }
 
