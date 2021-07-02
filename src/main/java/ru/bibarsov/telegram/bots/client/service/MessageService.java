@@ -19,19 +19,19 @@ public class MessageService {
         this.telegramBotApi = telegramBotApi;
     }
 
-    public void scheduleMessage(long id, String text) {
+    public void scheduleMessage(Object id, String text) {
         scheduleMessage(new SendMessageRequest(id, text, null, null, null));
     }
 
-    public void scheduleMessage(long id, String text, ParseMode parseMode) {
+    public void scheduleMessage(Object id, String text, ParseMode parseMode) {
         scheduleMessage(new SendMessageRequest(id, text, parseMode.value, null, null));
     }
 
-    public void scheduleMessage(long id, String text, ParseMode parseMode, boolean disableWebPagePreview) {
+    public void scheduleMessage(Object id, String text, ParseMode parseMode, boolean disableWebPagePreview) {
         scheduleMessage(new SendMessageRequest(id, text, parseMode.value, disableWebPagePreview, null));
     }
 
-    public void scheduleMessage(long id, String text, boolean disableWebPagePreview) {
+    public void scheduleMessage(Object id, String text, boolean disableWebPagePreview) {
         scheduleMessage(new SendMessageRequest(id, text, null, disableWebPagePreview, null));
     }
 
