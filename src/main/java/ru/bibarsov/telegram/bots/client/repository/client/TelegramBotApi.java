@@ -15,7 +15,6 @@ import java.io.UncheckedIOException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -67,9 +66,11 @@ public class TelegramBotApi {
         ).build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (response.isSuccessful() && response.body() != null) {
+            if (response.isSuccessful()) {
+                String rawResponse = checkNotNull(response.body()).string();
+
                 JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(checkNotNull(response.body()).string()).getAsJsonObject();
+                JsonObject o = parser.parse(rawResponse).getAsJsonObject();
                 if (o.get("ok").getAsBoolean()) {
                     return o.get("result").getAsLong();
                 }
@@ -90,10 +91,11 @@ public class TelegramBotApi {
                     .build()
         ).build();
         try (Response response = httpClient.newCall(request).execute()) {
-            ResponseBody body = response.body();
-            if (response.isSuccessful() && body != null) {
+            if (response.isSuccessful()) {
+                String rawResponse = checkNotNull(response.body()).string();
+
                 JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(body.string()).getAsJsonObject();
+                JsonObject o = parser.parse(rawResponse).getAsJsonObject();
                 if (o.get("ok").getAsBoolean()) {
                     return o.get("result").getAsBoolean();
                 }
@@ -104,7 +106,7 @@ public class TelegramBotApi {
         }
     }
 
-    public void deleteMessage(long chatId, long messageId) {
+    public boolean deleteMessage(long chatId, long messageId) {
         Request request = new Request.Builder().url(
             baseUri + "/deleteMessage?" +
                 RequestParamBuilder.builder()
@@ -113,11 +115,19 @@ public class TelegramBotApi {
                     .build()
         ).build();
         try (Response response = httpClient.newCall(request).execute()) {
-            LOGGER.info(Objects.requireNonNull(response.body()).string());
-            //message may be already deleted, so we don't worry
+            if (response.isSuccessful()) {
+                String rawResponse = checkNotNull(response.body()).string();
+
+                JsonParser parser = new JsonParser();
+                JsonObject o = parser.parse(rawResponse).getAsJsonObject();
+                if (o.get("ok").getAsBoolean()) {
+                    return o.get("result").getAsBoolean();
+                }
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+        return false;
     }
 
     //TODO consider response
@@ -144,9 +154,11 @@ public class TelegramBotApi {
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (response.isSuccessful() && response.body() != null) {
+            if (response.isSuccessful()) {
+                String rawResponse = checkNotNull(response.body()).string();
+
                 SendMessageResponse messageResponse = jsonHelper.deserialize(
-                    checkNotNull(response.body()).string(),
+                    rawResponse,
                     SendMessageResponse.class
                 );
                 if (messageResponse.ok) {
@@ -159,38 +171,25 @@ public class TelegramBotApi {
         return null;
     }
 
-    @Nullable
-    public Boolean edit(EditMessageTextRequest editMessageTextRequest) {
+    public boolean edit(EditMessageTextRequest editMessageTextRequest) {
         //TODO Refactor
         Request request = new Request.Builder()
             .url(baseUri + "/editMessageText")
             .post(RequestBody.create(jsonHelper.serialize(editMessageTextRequest), JSON_MEDIA_TYPE))
             .build();
         try (Response response = httpClient.newCall(request).execute()) {
-            ResponseBody body = response.body();
-            if (response.isSuccessful() && body != null) {
+            if (response.isSuccessful()) {
+                String rawResponse = checkNotNull(response.body()).string();
+
                 JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(body.string()).getAsJsonObject();
+                JsonObject o = parser.parse(rawResponse).getAsJsonObject();
                 return o.get("ok").getAsBoolean();
             }
-            return false;
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
         }
-        return null;
+        return false;
     }
-
-//    public void deleteMessage(long chatId, long messageId) {
-//        Request request = new Request.Builder()
-//            .url(String.format(TG_DELETE_MESSAGE_URL, apiKey, chatId, messageId))
-//            .build();
-//        //noinspection EmptyTryBlock
-//        try (Response ignored = httpClient.newCall(request).execute()) {
-//            //nothing is needed
-//        } catch (Throwable e) {
-//            LOGGER.error("Message deleting failed. ", e);
-//        }
-//    }
 
     public void editMessageReplyMarkup(EditMessageReplyMarkup requestBody) {
         Request request = new Request.Builder()
@@ -198,8 +197,8 @@ public class TelegramBotApi {
             .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
         try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
-                throw new RuntimeException("response is not successful or body is empty");
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("response is not successful");
             }
         } catch (Throwable e) {
             LOGGER.error("editMessageReplyMarkup failed. ", e);
@@ -214,8 +213,8 @@ public class TelegramBotApi {
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
-                throw new RuntimeException("response is not successful or body is empty");
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("response is not successful");
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
@@ -229,8 +228,8 @@ public class TelegramBotApi {
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
-                throw new RuntimeException("response is not successful or body is empty");
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("response is not successful");
             }
         } catch (Throwable e) {
             LOGGER.error("Message sending failed. ", e);
