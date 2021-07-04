@@ -16,7 +16,7 @@ import javax.annotation.concurrent.Immutable;
 public class SendMessageRequest {
 
     @JsonProperty("chat_id")
-    public final Object chatId; //Integer or String
+    public final String chatId;
 
     @JsonProperty("text")
     public final String text;
@@ -39,7 +39,7 @@ public class SendMessageRequest {
 
     @JsonCreator
     public SendMessageRequest(
-        @JsonProperty("chat_id") Object chatId,
+        @JsonProperty("chat_id") String chatId,
         @JsonProperty("text") String text,
         @JsonProperty("parse_mode") @Nullable String parseMode,
         @JsonProperty("disable_web_page_preview") @Nullable Boolean disableWebPagePreview,

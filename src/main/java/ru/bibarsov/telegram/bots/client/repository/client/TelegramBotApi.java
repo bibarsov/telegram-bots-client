@@ -1,11 +1,13 @@
 package ru.bibarsov.telegram.bots.client.repository.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.bibarsov.telegram.bots.client.dto.*;
+import ru.bibarsov.telegram.bots.client.exception.TelegramException;
 import ru.bibarsov.telegram.bots.client.serialization.JsonHelper;
 
 import javax.annotation.Nullable;
@@ -171,24 +173,79 @@ public class TelegramBotApi {
         return null;
     }
 
-    public boolean edit(EditMessageTextRequest editMessageTextRequest) {
-        //TODO Refactor
+    //TODO On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned
+    public Message editMessageText(EditMessageTextRequest editMessageTextRequest) {
         Request request = new Request.Builder()
             .url(baseUri + "/editMessageText")
             .post(RequestBody.create(jsonHelper.serialize(editMessageTextRequest), JSON_MEDIA_TYPE))
             .build();
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String rawResponse = checkNotNull(response.body()).string();
 
-                JsonParser parser = new JsonParser();
-                JsonObject o = parser.parse(rawResponse).getAsJsonObject();
-                return o.get("ok").getAsBoolean();
+        try (Response response = httpClient.newCall(request).execute()) {
+            String rawResponse = checkNotNull(response.body()).string();
+            TelegramResponseWrapper<Message> wrapper = jsonHelper.deserialize(
+                rawResponse,
+                new TypeReference<TelegramResponseWrapper<Message>>() {
+                }
+            );
+            if (wrapper.ok) {
+                return wrapper.result;
+            } else {
+                throw new TelegramException(checkNotNull(wrapper.errorCode), checkNotNull(wrapper.description));
             }
-        } catch (Throwable e) {
-            LOGGER.error("Message sending failed. ", e);
+        } catch (IOException e) {
+            LOGGER.error("Request execution failed. ", e);
+            throw new UncheckedIOException(e);
         }
-        return false;
+    }
+
+    //TODO On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned
+    public Message editMessageCaption(EditMessageCaptionRequest editCaptionRequest) {
+        Request request = new Request.Builder()
+            .url(baseUri + "/editMessageCaption")
+            .post(RequestBody.create(jsonHelper.serialize(editCaptionRequest), JSON_MEDIA_TYPE))
+            .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            String rawResponse = checkNotNull(response.body()).string();
+            TelegramResponseWrapper<Message> wrapper = jsonHelper.deserialize(
+                rawResponse,
+                new TypeReference<TelegramResponseWrapper<Message>>() {
+                }
+            );
+            if (wrapper.ok) {
+                return wrapper.result;
+            } else {
+                throw new TelegramException(checkNotNull(wrapper.errorCode), checkNotNull(wrapper.description));
+            }
+        } catch (IOException e) {
+            LOGGER.error("Request execution failed. ", e);
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    //TODO On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned
+    public Message editMessageMedia(EditMessageMediaRequest editMediaRequest) {
+        Request request = new Request.Builder()
+            .url(baseUri + "/editMessageMedia")
+            .post(RequestBody.create(jsonHelper.serialize(editMediaRequest), JSON_MEDIA_TYPE))
+            .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            String rawResponse = checkNotNull(response.body()).string();
+            TelegramResponseWrapper<Message> wrapper = jsonHelper.deserialize(
+                rawResponse,
+                new TypeReference<TelegramResponseWrapper<Message>>() {
+                }
+            );
+            if (wrapper.ok) {
+                return wrapper.result;
+            } else {
+                throw new TelegramException(checkNotNull(wrapper.errorCode), checkNotNull(wrapper.description));
+            }
+        } catch (IOException e) {
+            LOGGER.error("Request execution failed. ", e);
+            throw new UncheckedIOException(e);
+        }
     }
 
     public void editMessageReplyMarkup(EditMessageReplyMarkup requestBody) {
@@ -205,19 +262,27 @@ public class TelegramBotApi {
         }
     }
 
-    //TODO consider response
-    public void sendPhoto(SendPhotoRequest requestBody) {
+    public Message sendPhoto(SendPhotoRequest requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/sendPhoto")
             .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
             .build();
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new RuntimeException("response is not successful");
+            String rawResponse = checkNotNull(response.body()).string();
+            TelegramResponseWrapper<Message> wrapper = jsonHelper.deserialize(
+                rawResponse,
+                new TypeReference<TelegramResponseWrapper<Message>>() {
+                }
+            );
+            if (wrapper.ok) {
+                return wrapper.result;
+            } else {
+                throw new TelegramException(checkNotNull(wrapper.errorCode), checkNotNull(wrapper.description));
             }
-        } catch (Throwable e) {
-            LOGGER.error("Message sending failed. ", e);
+        } catch (IOException e) {
+            LOGGER.error("Request execution failed. ", e);
+            throw new UncheckedIOException(e);
         }
     }
 

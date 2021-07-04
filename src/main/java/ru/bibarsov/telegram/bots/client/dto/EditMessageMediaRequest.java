@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Immutable
 @ParametersAreNonnullByDefault
-public class EditMessageTextRequest {
+public class EditMessageMediaRequest {
 
     @Pattern(regexp = "\\d+|@[A-z0-9_]{5,}")
     @JsonProperty("chat_id")
@@ -29,37 +29,25 @@ public class EditMessageTextRequest {
     @Nullable
     public final String inlineMessageId;
 
-    @JsonProperty("text")
-    public final String text;
-
-    @JsonProperty("parse_mode")
-    @Nullable
-    public final String parseMode;
-
-    @JsonProperty("disable_web_page_preview")
-    @Nullable
-    public final Boolean disableWebPagePreview;
+    @JsonProperty("media")
+    public final InputMedia media;
 
     @JsonProperty("reply_markup")
     @Nullable
     public final InlineKeyboardMarkup replyMarkup;
 
     @JsonCreator
-    public EditMessageTextRequest(
+    public EditMessageMediaRequest(
         @JsonProperty("chat_id") @Nullable String chatId,
         @JsonProperty("message_id") @Nullable Long messageId,
         @JsonProperty("inline_message_id") @Nullable String inlineMessageId,
-        @JsonProperty("text") String text,
-        @JsonProperty("parse_mode") @Nullable String parseMode,
-        @JsonProperty("disable_web_page_preview") @Nullable Boolean disableWebPagePreview,
+        @JsonProperty("media") InputMedia media,
         @JsonProperty("reply_markup") @Nullable InlineKeyboardMarkup replyMarkup
     ) {
         this.chatId = chatId;
         this.messageId = messageId;
         this.inlineMessageId = inlineMessageId;
-        this.text = text;
-        this.parseMode = parseMode;
-        this.disableWebPagePreview = disableWebPagePreview;
+        this.media = media;
         this.replyMarkup = replyMarkup;
     }
 
