@@ -23,24 +23,48 @@ public class MessageService {
         scheduleMessage(new SendMessageRequest(id, text, null, null, null, null));
     }
 
+    public void scheduleMessage(long id, String text) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, null, null, null, null));
+    }
+
     public void scheduleMessage(String id, String text, ParseMode parseMode) {
         scheduleMessage(new SendMessageRequest(id, text, parseMode.value, null, null, null));
+    }
+
+    public void scheduleMessage(long id, String text, ParseMode parseMode) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, parseMode.value, null, null, null));
     }
 
     public void scheduleMessage(String id, String text, ParseMode parseMode, boolean disableWebPagePreview) {
         scheduleMessage(new SendMessageRequest(id, text, parseMode.value, disableWebPagePreview, null, null));
     }
 
+    public void scheduleMessage(long id, String text, ParseMode parseMode, boolean disableWebPagePreview) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, parseMode.value, disableWebPagePreview, null, null));
+    }
+
     public void scheduleMessage(String id, String text, ParseMode parseMode, boolean disableWebPagePreview, boolean disableNotification) {
         scheduleMessage(new SendMessageRequest(id, text, parseMode.value, disableWebPagePreview, disableNotification, null));
+    }
+
+    public void scheduleMessage(long id, String text, ParseMode parseMode, boolean disableWebPagePreview, boolean disableNotification) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, parseMode.value, disableWebPagePreview, disableNotification, null));
     }
 
     public void scheduleMessage(String id, String text, boolean disableWebPagePreview) {
         scheduleMessage(new SendMessageRequest(id, text, null, disableWebPagePreview, null, null));
     }
 
+    public void scheduleMessage(long id, String text, boolean disableWebPagePreview) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, null, disableWebPagePreview, null, null));
+    }
+
     public void scheduleMessage(String id, String text, boolean disableWebPagePreview, boolean disableNotification) {
         scheduleMessage(new SendMessageRequest(id, text, null, disableWebPagePreview, disableNotification, null));
+    }
+
+    public void scheduleMessage(long id, String text, boolean disableWebPagePreview, boolean disableNotification) {
+        scheduleMessage(new SendMessageRequest(String.valueOf(id), text, null, disableWebPagePreview, disableNotification, null));
     }
 
     public void scheduleMessage(SendMessageRequest request) {
