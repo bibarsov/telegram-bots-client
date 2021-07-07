@@ -149,7 +149,7 @@ public class TelegramBotApi {
     }
 
     @Nullable
-    public SendMessageResponse sendMessage(SendMessageRequest requestBody) {
+    public Message sendMessage(SendMessageRequest requestBody) {
         Request request = new Request.Builder()
             .url(baseUri + "/sendMessage")
             .post(RequestBody.create(jsonHelper.serialize(requestBody), JSON_MEDIA_TYPE))
@@ -159,12 +159,13 @@ public class TelegramBotApi {
             if (response.isSuccessful()) {
                 String rawResponse = checkNotNull(response.body()).string();
 
-                SendMessageResponse messageResponse = jsonHelper.deserialize(
+                TelegramResponseWrapper<Message> wrapper = jsonHelper.deserialize(
                     rawResponse,
-                    SendMessageResponse.class
+                    new TypeReference<TelegramResponseWrapper<Message>>() {
+                    }
                 );
-                if (messageResponse.ok) {
-                    return messageResponse;
+                if (wrapper.ok) {
+                    return wrapper.result;
                 }
             }
         } catch (Throwable e) {

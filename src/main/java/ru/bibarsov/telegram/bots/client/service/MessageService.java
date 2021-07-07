@@ -72,8 +72,17 @@ public class MessageService {
         });
     }
 
-    public void scheduleMessage(SendMessageRequest request, Consumer<SendMessageResponse> consumer) {
+    public void scheduleEditMessageText(EditMessageTextRequest request) {
+        scheduleEditMessageText(request, (ignored) -> {
+        });
+    }
+
+    public void scheduleMessage(SendMessageRequest request, Consumer<Message> consumer) {
         executors.submit(() -> consumer.accept(telegramBotApi.sendMessage(request)));
+    }
+
+    public void scheduleEditMessageText(EditMessageTextRequest request, Consumer<Message> consumer) {
+        executors.submit(() -> consumer.accept(telegramBotApi.editMessageText(request)));
     }
 
     public void schedulePhoto(SendPhotoRequest request) {

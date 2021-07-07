@@ -10,6 +10,7 @@ import ru.bibarsov.telegram.bots.client.dto.GetUpdateResponse;
 import ru.bibarsov.telegram.bots.client.dto.Update;
 import ru.bibarsov.telegram.bots.client.serialization.JsonHelper;
 import ru.bibarsov.telegram.bots.client.service.handler.CommandHandler;
+import ru.bibarsov.telegram.bots.client.service.handler.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -34,11 +35,11 @@ public class UpdatePollerService {
         String botApiKey,
         int workersThreadCount,
         List<CommandHandler<T>> handlers,
-        CommandHandler<T> defaultHandler,
+        Handler defaultHandler,
         Class<T> enumClass
     ) {
         this.botApiKey = botApiKey;
-        this.dispatcher = new BasicDispatcher<T>(
+        this.dispatcher = new BasicDispatcher<>(
             workersThreadCount,
             handlers,
             defaultHandler,
